@@ -15,9 +15,8 @@ runs:
   using: composite
   steps:
     - run: |
-        ACTION_CONTEXT=${{ inputs.context }}
-
-        echo "Context Name: ${ACTION_CONTEXT}"
+ 
+        echo "Context Name: ${{ inputs.context }}"
         echo "Ref Name: ${GITHUB_REF_NAME}"
         
         if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
@@ -41,6 +40,6 @@ runs:
             echo "${NAME}=${VALUE}"
             echo "${NAME}=${VALUE}" >> $GITHUB_ENV
           fi
-        done < "${{ inputs.env_path }}/${ACTION_CONTEXT}-${ENV}.env"
+        done < "${{ inputs.env_path }}/${{ inputs.context }}-${ENV}.env"
 
       shell: bash
