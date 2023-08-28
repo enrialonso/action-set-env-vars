@@ -5,14 +5,44 @@ inputs:
   env_path:
     description: The path for the environment folder (without '/' in the end)
     required: false
-    default: env/
+    default: env
   context:
-    required: true
+    required: false
     description: The context of the environment
     default: belender
 
 runs:
   using: composite
   steps:
-    - run: script-set-env.sh
+    - run: ls -lah
+      shell: bash
+    - run: |
+        ACTION_CONTEXT=${{ inputs.context }}
+
+        echo "Context Name: ${ACTION_CONTEXT}"
+        echo "Ref Name: ${GITHUB_REF_NAME}"
+        
+        if [[ "${GITHUB_REF_NAME}" == "main" ]]; then
+            export ENV=pro
+        elif [[ "${GITHUB_REF_NAME}" == feature* ]]; then
+            export ENV=dev
+        elif [[ "${GITHUB_REF_NAME}" == "develop" ]]; then
+            export ENV=dev
+        elif [[ "${GITHUB_REF_NAME}" == release* ]]; then
+            export ENV=qa
+        else
+            echo "Error: Verifica el nombre de la rama"
+            exit 1
+        fi
+        
+        echo "Env Selected: ${ENV}"
+        echo "ENV=${ENV}" >> $GITHUB_ENV
+        
+        while IFS='=' read -r NAME VALUE; do
+          if [[ -n "${NAME}" ]]; then
+            echo "${NAME}=${VALUE}"
+            echo "${NAME}=${VALUE}" >> $GITHUB_ENV
+          fi
+        done < "${{ inputs.env_path }}/${ACTION_CONTEXT}-${ENV}.env"
+
       shell: bash
