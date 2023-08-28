@@ -1,0 +1,18 @@
+name: Set Environment vars
+description: Set env vars from a file.
+
+inputs:
+  env_path:
+    description: The path for the environment folder (without '/' in the end)
+    required: false
+    default: env/
+  context:
+    required: true
+    description: The context of the environment
+    default: belender
+
+runs:
+  using: composite
+  steps:
+    - run: script-set-env.sh
+      shell: bash
