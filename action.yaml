@@ -10,6 +10,18 @@ inputs:
     required: false
     description: The context of the environment
     default: belender
+  enable-pro:
+    required: false
+    description: Enable env PRO
+    default: "true"
+  enable-qa:
+    required: false
+    description: Enable env QA
+    default: "true"
+  enable-dev:
+    required: false
+    description: Enable env DEV
+    default: "true"
 
 runs:
   using: composite
@@ -32,6 +44,13 @@ runs:
             exit 1
         fi
         
+        CONTEXT_PATH="${{ inputs.env_path }}/${{ inputs.context }}-${ENV}-test.env"
+        
+        if [ ! -f "${CONTEXT_PATH}" ]; then
+          echo "El fichero de contexto: ${CONTEXT_PATH} no existe."
+          exit 1
+        fi
+        
         echo "Env Selected: ${ENV}"
         echo "ENV=${ENV}" >> $GITHUB_ENV
         
@@ -40,6 +59,6 @@ runs:
             echo "${NAME}=${VALUE}"
             echo "${NAME}=${VALUE}" >> $GITHUB_ENV
           fi
-        done < "${{ inputs.env_path }}/${{ inputs.context }}-${ENV}.env"
+        done < ${CONTEXT_PATH}
 
       shell: bash
