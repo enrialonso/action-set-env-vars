@@ -44,7 +44,7 @@ runs:
             exit 1
         fi
         
-        CONTEXT_PATH="${{ inputs.env_path }}/${{ inputs.context }}-${ENV}-test.env"
+        CONTEXT_PATH="${{ inputs.env_path }}/${{ inputs.context }}-${ENV}.env"
         
         if [ ! -f "${CONTEXT_PATH}" ]; then
           echo "El fichero de contexto: ${CONTEXT_PATH} no existe."
